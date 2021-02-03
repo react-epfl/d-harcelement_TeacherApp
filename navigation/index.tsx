@@ -1,3 +1,9 @@
+import 'node-libs-expo/globals';
+import '@rn-matrix/expo/shim.js';
+
+import {polyfillGlobal} from 'react-native/Libraries/Utilities/PolyfillFunctions';
+polyfillGlobal('URL', () => require('whatwg-url').URL);
+
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
