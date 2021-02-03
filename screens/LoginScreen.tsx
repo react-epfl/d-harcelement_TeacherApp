@@ -3,18 +3,17 @@ import * as React from 'react';
 
 import { useEffect, useState } from 'react';
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { Icon, Input, Button, Text, Spinner } from '@ui-kitten/components';
+import { Icon, Input, Button, Text } from '@ui-kitten/components';
+import { homeserverValue } from '../constants/Server'
 
 import { View } from '../components/Themed';
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [usernameValue, setUsernameValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [errorText, setErrorText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = React.useState(true);
-
-  const homeserverValue = "***REMOVED***";
 
   const handleLoginPress = async () => {
     if (usernameValue.length === 0) {
@@ -66,6 +65,11 @@ export default function LoginScreen() {
             secureTextEntry={secureTextEntry}
             onChangeText={setPasswordValue}
         />
+        {errorText.length > 0 && (
+          <Text status="danger" style={{textAlign: 'center', marginTop: 15}}>
+            {errorText}
+          </Text> 
+        )}
         <Button
             disabled={isLoading}
             onPress={ handleLoginPress }
@@ -74,11 +78,17 @@ export default function LoginScreen() {
             status='primary'>
                 LogIn
         </Button>
-        {errorText.length > 0 && (
-          <Text status="danger" style={{textAlign: 'center', marginTop: 15}}>
-            {errorText}
-          </Text> 
-        )}
+        <View style={styles.row}>
+          <Text category='label'>New?</Text>
+          <Button
+              disabled={isLoading}
+              onPress={ () => navigation.push('SignupScreen', item)}
+              appearance='ghost'
+              size='medium'
+              status='primary'>
+                  SignUp
+          </Button>
+        </View>
     </View>
   );
 }
@@ -94,5 +104,10 @@ const styles = StyleSheet.create({
   indicator: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
   },
 });
