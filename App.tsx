@@ -5,10 +5,10 @@ import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useObservableState } from 'observable-hooks';
 
-
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { default as theme } from './theme.json'; 
 
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
@@ -26,7 +26,7 @@ export default function App() {
     return (
       <>
         <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider {...eva} theme={eva.light}>
+        <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
           <SafeAreaProvider>
             <Navigation colorScheme={colorScheme} />
             <StatusBar />
@@ -38,7 +38,7 @@ export default function App() {
     return (
       <>
         <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider {...eva} theme={eva.light}>
+        <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
           <NavigationContainer>
             <Stack.Navigator>
               <Stack.Screen name="d-harcelement" component={LoginScreen} />

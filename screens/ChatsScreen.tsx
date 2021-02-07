@@ -4,33 +4,20 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { View } from '../components/Themed';
 import { useObservableState } from 'observable-hooks';
-import { Icon, Text, List, ListItem } from '@ui-kitten/components';
+import { List } from '@ui-kitten/components';
+import ChatItem from '../constants/ChatItem';
 
 export default function ChatsScreen() {
-  const chatList = useObservableState(matrix.getRooms$(true), []);
+  const chatList = useObservableState(matrix.getRoomsByType$('direct'));
+
   const isReady = useObservableState(matrix.isReady$());
   const isSynced = useObservableState(matrix.isSynced$());
 
-  const renderItemIcon = (props) => (
-    <Icon {...props} name='person'/>
-  );
-
-  const renderItem = ({ item, index }) => (
-    <ListItem
-      title={`${item.name}`}
-      accessoryLeft={renderItemIcon}
-    />
-  );
-
-  console.log(chatList);
+  const renderItem = ({item}) => {
+    return <ChatItem key={item.id} chat={item} />;
+  };
   
-  if (!isReady || !isSynced || !chatList) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  } else if (chatList.length = 0){
+  if (!isReady || !isSynced ) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator size="large" />
@@ -38,7 +25,7 @@ export default function ChatsScreen() {
     );
   } else {
     return (
-      <View style={styles.container}>
+      <View>
         <List
           data={chatList}
           renderItem={renderItem}
@@ -47,20 +34,3 @@ export default function ChatsScreen() {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

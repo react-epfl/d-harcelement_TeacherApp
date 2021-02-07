@@ -1,39 +1,49 @@
 import {matrix} from '@rn-matrix/expo';
 import * as React from 'react';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { Icon, Input, Button, Text } from '@ui-kitten/components';
-import { homeserverValue } from '../constants/Server'
+import { Icon, Input, Button, Text, Layout } from '@ui-kitten/components';
+import Constants from 'expo-constants';
+import * as sdk from "matrix-js-sdk";
 
 import { View } from '../components/Themed';
+import  { homeserverValue } from '../constants/Server';
 
-export default function LoginScreen({ navigation }) {
+export default function SignupScreen() {
   const [usernameValue, setUsernameValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
+  const [nameValue, setNameValue] = useState('');
+  const [surnameValue, setSurnameValue] = useState('');  
   const [errorText, setErrorText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
-  const handleLoginPress = async () => {
-    if (usernameValue.length === 0) {
-      setErrorText('login.missingUsernameError');
-    } else if (passwordValue.length === 0) {
-      setErrorText('login.missingPasswordError');
-    } else {
-      setErrorText('');
-      setIsLoading(true);
-      const response = matrix.loginWithPassword(
-        usernameValue,
-        passwordValue,
-        homeserverValue,
-        true,
-      );
-      if (response.error) {
-        setIsLoading(false);
-        setErrorText(response.message);
-      }
-    }
+  const client = sdk.createClient(homeserverValue);
+  console.log(client);
+
+  const handleSignupPress = async () => {
+    return fetch(homeserverValue + '/_matrix/client/r0/register?kind=${encodeURIComponent("user")}', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: usernameValue,
+          password: passwordValue,
+          device_id: Constants.deviceId,
+          initial_device_display_name: nameValue + ' ' + surnameValue,
+          inhibit_login: false
+        })
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        return json.movies;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const toggleSecureEntry = () => {
@@ -46,15 +56,21 @@ export default function LoginScreen({ navigation }) {
     </TouchableWithoutFeedback>
   );
 
-  useEffect(() => {
-    setErrorText('');
-  }, [usernameValue, passwordValue]);
-
   return (
     <View style={styles.container}>
+        <Layout style={styles.rowContainer} level='1'>
+            <Input
+                placeholder='Name'
+            />
+            <Input
+                placeholder='Surname'
+            />
+        </Layout>
         <Input
             label='Username'
             placeholder='Username'
+            caption='Username must not be empty, and must contain only the characters a-z, 0-9, ., _, =, -, and /.'
+            captionIcon={evaProps => <Icon {...evaProps} name='alert-circle-outline'/>}
             onChangeText={setUsernameValue}
             autoCapitalize='none'
         />
@@ -72,23 +88,12 @@ export default function LoginScreen({ navigation }) {
         )}
         <Button
             disabled={isLoading}
-            onPress={ handleLoginPress }
+            onPress={ handleSignupPress }
             appearance='outline'
             size='medium'
             status='primary'>
-                LogIn
+                SignUp
         </Button>
-        <View style={styles.row}>
-          <Text category='label'>New?</Text>
-          <Button
-              disabled={isLoading}
-              onPress={ () => navigation.push('SignupScreen')}
-              appearance='ghost'
-              size='medium'
-              status='primary'>
-                  SignUp
-          </Button>
-        </View>
     </View>
   );
 }
@@ -109,5 +114,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 20,
+  },
+  input: {
+    flex: 1,
+    margin: 2,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
