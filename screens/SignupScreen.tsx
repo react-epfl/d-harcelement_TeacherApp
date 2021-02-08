@@ -4,13 +4,12 @@ import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Icon, Input, Button, Text, Layout } from '@ui-kitten/components';
-import Constants from 'expo-constants';
 import * as sdk from "matrix-js-sdk";
 
 import { View } from '../components/Themed';
 import  { homeserverValue } from '../constants/Server';
 
-export default function SignupScreen() {
+export default function SignupScreen({ navigation }) {
   const [usernameValue, setUsernameValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [nameValue, setNameValue] = useState('');
@@ -18,32 +17,27 @@ export default function SignupScreen() {
   const [errorText, setErrorText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = React.useState(true);
-
-  const client = sdk.createClient(homeserverValue);
-  console.log(client);
-
+  
   const handleSignupPress = async () => {
-    return fetch(homeserverValue + '/_matrix/client/r0/register?kind=${encodeURIComponent("user")}', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: usernameValue,
-          password: passwordValue,
-          device_id: Constants.deviceId,
-          initial_device_display_name: nameValue + ' ' + surnameValue,
-          inhibit_login: false
-        })
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        return json.movies;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const client = sdk.createClient(homeserverValue);
+    const userRegisterResult = await client.register(
+      usernameValue,
+      passwordValue,
+      null,
+      { type: 'm.login.dummy' }
+    );
+
+    const matrixClient = await sdk.createClient({
+      baseUrl: homeserverValue,
+      userId: userRegisterResult.user_id,
+      accessToken: userRegisterResult.access_token,
+      deviceId: userRegisterResult.device_id
+    });
+    await matrixClient.startClient();
+    navigation.navigate('LogIn');
+    if (matrixClient.error) {
+      console.log(matrixClient.message);
+    }
   };
 
   const toggleSecureEntry = () => {
@@ -58,14 +52,6 @@ export default function SignupScreen() {
 
   return (
     <View style={styles.container}>
-        <Layout style={styles.rowContainer} level='1'>
-            <Input
-                placeholder='Name'
-            />
-            <Input
-                placeholder='Surname'
-            />
-        </Layout>
         <Input
             label='Username'
             placeholder='Username'
@@ -105,23 +91,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 20,
     paddingRight: 20,
-  },
-  indicator: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  input: {
-    flex: 1,
-    margin: 2,
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
 });

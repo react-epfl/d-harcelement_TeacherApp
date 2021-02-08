@@ -15,6 +15,7 @@ import Navigation from './navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './screens/LoginScreen';
+import SignupScreen from './screens/SignupScreen';
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -40,8 +41,9 @@ export default function App() {
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
           <NavigationContainer>
-            <Stack.Navigator>
-              <Stack.Screen name="d-harcelement" component={LoginScreen} />
+            <Stack.Navigator initialRouteName="LogIn">
+              <Stack.Screen name="LogIn" component={LoginScreen} />
+              <Stack.Screen name="SignUp" component={SignupScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </ApplicationProvider>

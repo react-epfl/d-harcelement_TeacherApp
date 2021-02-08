@@ -17,13 +17,13 @@ export default function LoginScreen({ navigation }) {
 
   const handleLoginPress = async () => {
     if (usernameValue.length === 0) {
-      setErrorText('login.missingUsernameError');
+      setErrorText('Missing Username Error');
     } else if (passwordValue.length === 0) {
-      setErrorText('login.missingPasswordError');
+      setErrorText('Missing Password Error');
     } else {
       setErrorText('');
       setIsLoading(true);
-      const response = matrix.loginWithPassword(
+      const response = await matrix.loginWithPassword(
         usernameValue,
         passwordValue,
         homeserverValue,
@@ -82,7 +82,7 @@ export default function LoginScreen({ navigation }) {
           <Text category='label'>New?</Text>
           <Button
               disabled={isLoading}
-              onPress={ () => navigation.push('SignupScreen')}
+              onPress={ () => navigation.navigate('SignUp')}
               appearance='ghost'
               size='medium'
               status='primary'>
