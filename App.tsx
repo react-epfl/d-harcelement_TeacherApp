@@ -1,7 +1,7 @@
 import { matrix } from '@rn-matrix/expo';
 import '@rn-matrix/expo/shim';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useObservableState } from 'observable-hooks';
 

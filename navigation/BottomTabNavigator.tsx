@@ -6,6 +6,7 @@ import * as React from 'react';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ChatsScreen from '../screens/ChatsScreen';
+import NewChatScreen from '../screens/NewChatScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { BottomTabParamList, ChatsParamList, SettingsParamList } from '../types';
 
@@ -53,6 +54,16 @@ function ChatsNavigator() {
         name="ChatsScreen"
         component={ChatsScreen}
         options={{ headerTitle: 'Chats' }}
+      />
+        <ChatsStack.Screen
+        name="NewChatScreen"
+        component={NewChatScreen}
+        options={{ 
+          headerTitle: '',
+          headerTitleStyle: {color: '#ffffff'},
+          headerStyle: {backgroundColor: '#0A3D62'},
+          headerTintColor: '#FA983A'  
+        }}
       />
     </ChatsStack.Navigator>
   );

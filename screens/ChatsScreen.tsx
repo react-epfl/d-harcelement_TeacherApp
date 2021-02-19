@@ -5,16 +5,16 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { View } from '../components/Themed';
 import { useObservableState } from 'observable-hooks';
 import { List } from '@ui-kitten/components';
-import ChatItem from '../constants/ChatItem';
+import ChatItem from '../components/ChatItem';
 
-export default function ChatsScreen() {
+export default function ChatsScreen({navigation}) {
   const chatList = useObservableState(matrix.getRoomsByType$('direct'));
 
   const isReady = useObservableState(matrix.isReady$());
   const isSynced = useObservableState(matrix.isSynced$());
 
-  const renderItem = ({item}) => {
-    return <ChatItem key={item.id} chat={item} />;
+  const renderItem = ({item, index}) => {
+    return <ChatItem navigation={navigation} chat={item} index={index}/>;
   };
   
   if (!isReady || !isSynced ) {

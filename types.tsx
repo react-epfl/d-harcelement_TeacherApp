@@ -10,6 +10,7 @@ export type BottomTabParamList = {
 
 export type ChatsParamList = {
   ChatsScreen: undefined;
+  NewChatScreen: undefined;
 };
 
 export type SettingsParamList = {

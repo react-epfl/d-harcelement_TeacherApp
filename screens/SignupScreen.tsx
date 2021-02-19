@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import { useState } from 'react';
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { Icon, Input, Button, Text, Layout } from '@ui-kitten/components';
+import { Icon, Input, Button, Text } from '@ui-kitten/components';
 import * as sdk from "matrix-js-sdk";
 
 import { View } from '../components/Themed';
